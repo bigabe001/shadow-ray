@@ -43,10 +43,9 @@ impl ShadowRayContract {
             return false;
         }
 
-        // STABLE PROTOCOL 25 API:
-        // Use multi_pairing_check to verify the elliptic curve pairing.
-        // This is the host-function powered verifier for BN254.
-        env.crypto().bn254().multi_pairing_check(&proof);
+        // STABLE SDK 25.1.1 API:
+        // This is the correct high-level verifier for Groth16 on the BN254 curve.
+        env.crypto().groth16().verify_bn254(&proof, &public_inputs);
 
         true 
     }
