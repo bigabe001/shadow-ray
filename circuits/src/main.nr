@@ -6,14 +6,15 @@ fn main(
     salt: Field, 
     pub_commitment: pub Field
 ) {
-    // Create a Pedersen commitment (the "Fingerprint" of your location)
-    // The 'salt' prevents people from guessing your X/Y coordinates.
-    let hash = std::hash::pedersen_hash([x as Field, y as Field, salt]);
+    // 1. PROTOCOL 25 OPTIMIZATION: Use Poseidon instead of Pedersen
+    // Poseidon is the "X-Ray" standard for high-performance ZK gaming.
+    let hash = std::hash::poseidon::bn254::hash_3([x as Field, y as Field, salt]);
     
-    // Proves the coordinates you hold match the hash on the blockchain
+    // 2. PROVABLE VALIDITY: Ensure the private secret matches the public commitment
     assert(hash == pub_commitment);
     
-    // Boundary check: Proves the shadow is within the 100x100 game board
-    assert(x <= 100);
-    assert(y <= 100);
+    // 3. ESSENTIAL GAMEPLAY: Proves the unit is on the 10x10 "Shadow Ray" grid
+    // This is the "Fairness" mechanic: you can't hide a unit outside the map!
+    assert(x <= 10);
+    assert(y <= 10);
 }
