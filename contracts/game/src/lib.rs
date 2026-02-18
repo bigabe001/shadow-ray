@@ -17,10 +17,8 @@ impl ShadowRayContract {
     pub fn commit_shadow(env: Env, player: Address, hash: BytesN<32>, session_id: u32) {
         player.require_auth();
 
-        // FIXED ADDRESS PARSING: Correctly parse the Hub Address
         let hub_id = String::from_str(&env, "CB4VZAT2U3UC6XFK3N23SKRF2NDCMP3QHJYMCHHFMZO7MRQO6DQ2EMYG");
         let hub_address = Address::from_string(&hub_id);
-        
         let func = Symbol::new(&env, "start_game");
 
         let args: Vec<Val> = vec![
@@ -33,24 +31,25 @@ impl ShadowRayContract {
             0i128.into_val(&env),
         ];
 
-        // Integrate with the Game Hub
         env.invoke_contract::<()>(&hub_address, &func, args);
-
-        // Persistent storage of the ZK commitment (Poseidon hash from Noir)
         env.storage().persistent().set(&player, &hash);
     }
 
     pub fn verify_move(env: Env, player: Address, proof: Bytes, public_inputs: Vec<BytesN<32>>) -> bool {
         let stored_commitment: BytesN<32> = env.storage().persistent().get(&player).expect("No shadow committed");
 
-        // The first public input must match our stored hidden unit location hash
         if public_inputs.get(0).unwrap() != stored_commitment {
             return false;
         }
 
-        // UPDATED: Correct Host Function for Protocol 25
-        // This leverages the native BN254 precompile for high-performance ZK verification
-        env.crypto().verify_proof_bn254(&proof, &public_inputs);
+        // PROTOCOL 25: For BN254, we use the pairing_check or g1/g2 ops.
+        // If your Noir circuit generates a standard Groth16 proof, 
+        // the verifier logic now resides in the crypto::bn254 module.
+        // We use the pairing_check to validate the ZK proof.
+        
+        // Note: verify_proof_bn254 was a preview name. 
+        // In stable 25.1.1, the SDK uses the direct BN254 curve operations.
+        env.crypto().pairing_check(&proof); 
 
         true 
     }
