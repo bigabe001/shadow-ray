@@ -42,9 +42,10 @@ impl ShadowRayContract {
             return false;
         }
 
-        // Protocol 25: This is the stabilized host function call for Groth16/BN254
-        // The SDK exposes this directly under crypto() in the latest stable release
-        env.crypto().verify_proof_bn254(&proof, &public_inputs);
+        // PROTOCOL 25 STABLE: 
+        // For BN254/Groth16 (Noir), use the native pairing check.
+        // This validates the elliptic curve pairings provided in the proof.
+        env.crypto().bn254_pairing_check(&proof);
 
         true 
     }

@@ -1,6 +1,6 @@
 [package]
 name = "shadow-ray"
-version = "0.2.5"
+version = "0.2.8"
 edition = "2021"
 
 [lib]
@@ -8,4 +8,10 @@ crate-type = ["cdylib"]
 
 [dependencies]
 soroban-sdk = "25.1.1"
-# The 'crypto' feature is included by default in 25.1.1 for Protocol 25
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = false
+panic = "abort"
+lto = true
