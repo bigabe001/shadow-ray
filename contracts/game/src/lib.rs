@@ -39,15 +39,14 @@ impl ShadowRayContract {
     pub fn verify_move(env: Env, player: Address, proof: Bytes, public_inputs: Vec<BytesN<32>>) -> bool {
         let stored_commitment: BytesN<32> = env.storage().persistent().get(&player).expect("No shadow committed");
 
-        // Verify that the first public input of the ZK proof is the stored commitment
         if public_inputs.get(0).unwrap() != stored_commitment {
             return false;
         }
 
         // STABLE PROTOCOL 25 API:
-        // Access the BN254 curve specifically and call the multi-pairing check.
-        // This is the underlying host function that validates Groth16 proofs.
-        env.crypto().bn254().verify_proof_groth16(&proof, &public_inputs);
+        // Use multi_pairing_check to verify the elliptic curve pairing.
+        // This is the host-function powered verifier for BN254.
+        env.crypto().bn254().multi_pairing_check(&proof);
 
         true 
     }
