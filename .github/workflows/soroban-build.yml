@@ -3,8 +3,6 @@ name: Shadow Ray Build and Verify
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 permissions:
   id-token: write
@@ -16,9 +14,9 @@ jobs:
   build-and-verify:
     uses: stellar-expert/soroban-build-workflow/.github/workflows/release.yml@main
     with:
-      # 'relative_path' is the correct key for subdirectories
       relative_path: contracts/game
       package: shadow-ray
-      release_name: "Shadow Ray Build ${{ github.sha }}"
+      # Simplified release name to prevent "tag_name not well-formed" error
+      release_name: "v${{ github.run_number }}"
     secrets:
       release_token: ${{ secrets.GITHUB_TOKEN }}
