@@ -1,19 +1,11 @@
 [package]
 name = "shadow-ray"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-soroban-sdk = { version = "25.1.1", features = ["crypto"] }
-
-# Move profile settings to the root Cargo.toml if you haven't already
-# but keep these here for the individual contract build consistency
-[profile.release]
-opt-level = "z"
-overflow-checks = true
-debug = false
-panic = "abort"
-lto = true
+soroban-sdk = "25.1.1"
+# The 'crypto' feature is included by default in 25.1.1 for Protocol 25
