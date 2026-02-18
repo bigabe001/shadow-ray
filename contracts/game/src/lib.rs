@@ -42,14 +42,9 @@ impl ShadowRayContract {
             return false;
         }
 
-        // PROTOCOL 25: For BN254, we use the pairing_check or g1/g2 ops.
-        // If your Noir circuit generates a standard Groth16 proof, 
-        // the verifier logic now resides in the crypto::bn254 module.
-        // We use the pairing_check to validate the ZK proof.
-        
-        // Note: verify_proof_bn254 was a preview name. 
-        // In stable 25.1.1, the SDK uses the direct BN254 curve operations.
-        env.crypto().pairing_check(&proof); 
+        // Protocol 25: This is the stabilized host function call for Groth16/BN254
+        // The SDK exposes this directly under crypto() in the latest stable release
+        env.crypto().verify_proof_bn254(&proof, &public_inputs);
 
         true 
     }
