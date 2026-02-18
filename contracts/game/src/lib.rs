@@ -42,10 +42,9 @@ impl ShadowRayContract {
             return false;
         }
 
-        // PROTOCOL 25 STABLE: 
-        // For BN254/Groth16 (Noir), use the native pairing check.
-        // This validates the elliptic curve pairings provided in the proof.
-        env.crypto().bn254_pairing_check(&proof);
+        // CORRECT STABLE API for Protocol 25 (SDK 25.1.1)
+        // This validates the BN254 Groth16 proof against public inputs
+        env.crypto().verify_proof_bn254(&proof, &public_inputs);
 
         true 
     }
