@@ -42,17 +42,14 @@ impl ShadowRayContract {
 
     pub fn verify_move(env: Env, player: Address, proof: Bytes, public_inputs: Vec<BytesN<32>>) -> bool {
         let stored_commitment: BytesN<32> = env.storage().persistent().get(&player).expect("No shadow committed");
-    
-        // Ensure the first public input is the hash the player committed to earlier
+
         if public_inputs.get(0).unwrap() != stored_commitment {
             return false;
         }
-    
-        // PROTOCOL 25: Call the native BN254 Verifier
-        // This is the "God Mode" of ZK on Stellar. 
-        // It returns () on success or traps/panics on failure.
-        env.crypto().verify_proof_bn254(&proof, &public_inputs);
-    
+
+        // CORRECT METHOD NAME for Protocol 25 / X-Ray:
+        env.crypto().verify_proof_groth16_bn254(&proof, &public_inputs);
+
         true 
     }
 }
