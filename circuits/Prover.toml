@@ -1,0 +1,5 @@
+x = 10
+y = 20
+salt = "0x01"
+# This is the commitment hash that matches (10, 20, 0x01)
+pub_commitment = "0x0ac2042e1bba98f02a6e507d6b9d7c41dac050ddfc982212771a1106e8ca1c56"
